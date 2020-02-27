@@ -1,6 +1,7 @@
 // MCT1
 // MCT1_Kap04_Demo01b_TastenPolling.ino
 // Version vom 28.3.2019
+// gitHub Source Control
 //-------------------------------------
 // LED - Board an J5 (D16 -D23)
 // Tast - Board an J3 (D8-D15)
@@ -10,7 +11,7 @@ const int BTN_PIN = 20;   // pushbutton SB7 an D8
 
 //--- Zustandsspeicher (kein bool da   int digitalRead() )
 int btnState = HIGH;
-int btnStateOld = 0;
+int btnStateOld = 1;
 int ledState = HIGH;
 
 //--------------------------------------
