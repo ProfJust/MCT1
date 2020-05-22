@@ -1,0 +1,67 @@
+//==========================================
+// Westfälische Hochschule - FB Maschinenbau
+// Prof. Dr.-Ing. Olaf Just
+// MCT1 - 2.5.2019
+//--------------------------------------
+// V7_sw01_Stepper_Single_Coil.ino
+//-----E-Blocks ------------------------
+// LED - Board an J5  (D16-D23) + Power-Board + Stepper-Motor
+// 6V Steckernetzteil für Motor in Hohlstecker Arduino
+// GND wird über Pin 9 S-Sub zurückgeführt - kein Kabel notw.
+// 6V vom Vin-Schraubkl. am EB092 mit Schalter auf Sammelklemme  
+// Sammelklemme mit schwarz, weiß vom Stepper
+// MOSFETS D0..D3  => Pin 16..19
+//----------------------------------------------
+//--- Die Stepper Kabel sind an folgende Pins gedrahtet ---
+#define BLAU   16
+#define GELB   17
+#define ORANGE 18
+#define ROT    19
+
+//=========== globale Variablen =======================
+const int L[4] = {ORANGE, ROT, BLAU, GELB,}; // Die 4 Wicklungen des Schrittmotors
+unsigned int state = 0; //der aktuelle Zustand des Automaten
+//--------------------------------------
+void setup() {
+  // Ports auf Ausgang setzen
+  for (int i = 0; i < 4; i++)  pinMode(L[i], OUTPUT);
+  state = 0; //Start
+}
+//--------------------------------------
+void statemachine() {
+  switch (state) {
+    case 0:
+      digitalWrite(L[0], HIGH);
+      digitalWrite(L[1], LOW);
+      digitalWrite(L[2], LOW);
+      digitalWrite(L[3], LOW);
+      state = 1;
+      break;
+    case 1:
+      digitalWrite(L[0], LOW);
+      digitalWrite(L[1], HIGH);
+      digitalWrite(L[2], LOW);
+      digitalWrite(L[3], LOW);
+      state = 2;
+      break;
+    case 2:
+      digitalWrite(L[0], LOW);
+      digitalWrite(L[1], LOW);
+      digitalWrite(L[2], HIGH);
+      digitalWrite(L[3], LOW);
+      state = 3;
+      break;
+    case 3:
+      digitalWrite(L[0], LOW);
+      digitalWrite(L[1], LOW);
+      digitalWrite(L[2], LOW);
+      digitalWrite(L[3], HIGH);
+      state = 0;
+      break;
+  }
+}
+//--------------------------------------
+void loop() {
+  statemachine();
+  delay(500);
+}
