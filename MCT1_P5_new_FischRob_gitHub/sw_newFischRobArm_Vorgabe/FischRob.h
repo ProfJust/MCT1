@@ -51,7 +51,7 @@ int limit[3][2] = {
 volatile int rot_cnt = 0, lift_cnt = 0, pick_cnt = 0;
 
 // Pointerarray auf die Zaehlvariablen zur Uebergabe an die Roboterklasse
-int* enc_val[3] = {&rot_cnt, &lift_cnt, &pick_cnt};
+volatile int* enc_val[3] = {&rot_cnt, &lift_cnt, &pick_cnt};
 
 // Array zum Aktivieren der Limits zur Uebergabe an die Roboterklasse
 bool limits[3] = { HIGH, HIGH, HIGH };

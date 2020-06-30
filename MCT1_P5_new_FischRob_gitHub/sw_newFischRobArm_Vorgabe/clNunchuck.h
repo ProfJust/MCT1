@@ -48,9 +48,9 @@ class clNunchuck {
     // Default Calibration Values
     const uint8_t def_centre_joy_x = 124;
     const uint8_t def_centre_joy_y = 132;
-    const uint8_t def_accel_zero_x = 490;
-    const uint8_t def_accel_zero_y = 500;
-    const uint8_t def_accel_zero_z = 525;
+    const uint16_t def_accel_zero_x = 490;
+    const uint16_t def_accel_zero_y = 500;
+    const uint16_t def_accel_zero_z = 525;
 
     // Keeps data payload from nunchuk
     uint8_t nunchuk_buf[6];

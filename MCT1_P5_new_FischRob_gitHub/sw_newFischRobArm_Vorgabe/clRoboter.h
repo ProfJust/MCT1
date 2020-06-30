@@ -18,14 +18,20 @@ class clRoboter {
     clEncPWMDrive pick;
 
   public:
-    clRoboter(int pin[3][5], int limit[3][2], bool limits[3], int* enc_val[3]);
+    clRoboter(int pin[3][5], int limit[3][2], bool limits[3], volatile int* enc_val[3]);
     int drive_rot(int value, int scale);
     int drive_lift(int value, int scale);
     int drive_pick(int value, int scale);
     void refDrive();
 };
 
-clRoboter::clRoboter(int pin[3][5], int limit[3][2], bool limits[3], int* enc_val[3]) : rot(pin[0], limit[0], limits[0],enc_val[0]), lift(pin[1], limit[1], limits[1],enc_val[1]), pick(pin[2], limit[2], limits[2],enc_val[2]) {};
+//Was ist das hier ?
+// Konstruktor mit default-Werten? Wieso dann so viele? ne sind nur 3
+clRoboter::clRoboter(int pin[3][5], int limit[3][2], bool limits[3], volatile int* enc_val[3]) :  
+                     rot (pin[0], limit[0], limits[0], enc_val[0]),
+                     lift(pin[1], limit[1], limits[1], enc_val[1]),
+                     pick(pin[2], limit[2], limits[2], enc_val[2]) 
+                     {};
 
 int clRoboter::drive_rot(int value, int scale) {
   return rot.directDrive(value, scale);

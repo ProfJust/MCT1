@@ -19,12 +19,12 @@ class clEncPWMDrive {
     int pin_en;
     int limit_high;
     int limit_low;
-    int* enc_val;
+    volatile int* enc_val;
     bool limits;
     bool init;
 
   public:
-    clEncPWMDrive(int ipin[5], int ilimit[2], bool xlimits, int* penc_val);
+    clEncPWMDrive(int ipin[5], int ilimit[2], bool xlimits,  volatile int* penc_val);
     int directDrive(int value, int scale);
     void refDrive();
     void setInit() {
@@ -32,7 +32,7 @@ class clEncPWMDrive {
     }
 };
 
-clEncPWMDrive::clEncPWMDrive(int ipin[5], int ilimit[2], bool xlimits, int* penc_val) {
+clEncPWMDrive::clEncPWMDrive(int ipin[5], int ilimit[2], bool xlimits,  volatile int* penc_val) {
   pin_plus = ipin[0];
   pin_minus = ipin[1];
   pin_enc = ipin[2];
