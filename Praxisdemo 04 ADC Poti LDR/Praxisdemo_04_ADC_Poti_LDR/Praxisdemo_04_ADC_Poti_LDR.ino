@@ -2,7 +2,7 @@
  * Praxisdemo 04 ADC Poti LDR.ino
  *
  * Created: 10/2/2014 4:13:55 PM
- * Author: olafj_000
+ * Author: olafj_000  Test
  -------------------------------------------
  # LCD an J3 (D0-D7)
  # Sensor Board EB003 an J1 (A0-A7)
