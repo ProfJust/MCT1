@@ -1,2 +1,2 @@
-#define SECRET_SSID "just_a_WLAN_UG_2GHZ4"
+#define SECRET_SSID "WLAN NAME"
 #define SECRET_PASS "WLAN PASSWORT"
