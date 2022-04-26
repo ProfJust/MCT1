@@ -10,6 +10,10 @@
 #include <QDebug>
 #include <QLabel>
 #include <QPainter>
+#include <QPainterPath>
+#include <QSpinBox>
+#include <QString>
+#include <QStringList>
 
 
 
@@ -45,6 +49,10 @@ public:
 	QLabel *anzeige_sensorwert;
 	QLabel *beschr_cm;
 	QLabel *anzeige_cm;
+	QSpinBox* COMportNr;
+	QLabel* COMlbl;
+	QPushButton* pb_setComNr;
+	
 
 private:
 	Ui::QtLEDClass ui;
@@ -55,6 +63,7 @@ private:
 
 	private slots:
 	void myTimerSlot();
+	void COMportInit();
 };
 
 

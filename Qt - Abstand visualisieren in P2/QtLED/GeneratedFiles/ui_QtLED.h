@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'QtLED.ui'
 **
-** Created by: Qt User Interface Compiler version 5.11.2
+** Created by: Qt User Interface Compiler version 5.15.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -30,19 +30,19 @@ public:
     void setupUi(QMainWindow *QtLEDClass)
     {
         if (QtLEDClass->objectName().isEmpty())
-            QtLEDClass->setObjectName(QStringLiteral("QtLEDClass"));
+            QtLEDClass->setObjectName(QString::fromUtf8("QtLEDClass"));
         QtLEDClass->resize(600, 400);
         menuBar = new QMenuBar(QtLEDClass);
-        menuBar->setObjectName(QStringLiteral("menuBar"));
+        menuBar->setObjectName(QString::fromUtf8("menuBar"));
         QtLEDClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(QtLEDClass);
-        mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
+        mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
         QtLEDClass->addToolBar(mainToolBar);
         centralWidget = new QWidget(QtLEDClass);
-        centralWidget->setObjectName(QStringLiteral("centralWidget"));
+        centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         QtLEDClass->setCentralWidget(centralWidget);
         statusBar = new QStatusBar(QtLEDClass);
-        statusBar->setObjectName(QStringLiteral("statusBar"));
+        statusBar->setObjectName(QString::fromUtf8("statusBar"));
         QtLEDClass->setStatusBar(statusBar);
 
         retranslateUi(QtLEDClass);
@@ -52,7 +52,7 @@ public:
 
     void retranslateUi(QMainWindow *QtLEDClass)
     {
-        QtLEDClass->setWindowTitle(QApplication::translate("QtLEDClass", "QtLED", nullptr));
+        QtLEDClass->setWindowTitle(QCoreApplication::translate("QtLEDClass", "QtLED", nullptr));
     } // retranslateUi
 
 };

@@ -2,20 +2,12 @@
 //----------------------------------
 #include "QtLED.h"
 
+
 QtLED::QtLED(QWidget *parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
 
-	serial.setPortName("COM3");
-	serial.open(QIODevice::ReadWrite);
-	serial.setBaudRate(QSerialPort::Baud9600);
-	serial.setDataBits(QSerialPort::Data8);
-	serial.setParity(QSerialPort::NoParity);
-	serial.setStopBits(QSerialPort::OneStop);
-	serial.setFlowControl(QSerialPort::NoFlowControl);
-	while (!serial.isOpen()) 
-		serial.open(QIODevice::ReadWrite);
 
 	// ---- Create Rectangle-Bar ------------------
 	this->setFixedWidth(1100);
@@ -33,7 +25,7 @@ QtLED::QtLED(QWidget *parent)
 	anzeige_cm = new QLabel(this);
 	anzeige_cm->setGeometry(330, 120, 400, 100);
 
-	//--- Set Fonts for Labels
+	//--- Set Fonts for Labels ---
 	QFont font_sensorwert = anzeige_sensorwert->font();
 	font_sensorwert.setPointSize(40);
 	anzeige_sensorwert->setFont(font_sensorwert);
@@ -72,53 +64,100 @@ QtLED::QtLED(QWidget *parent)
 	rb_cm.maximalwert = 157;
 
 
+	// --- Choose COM Port ---
+	COMlbl = new QLabel(this);
+	COMlbl->setGeometry(620, 40, 200, 40);
+	QString qstr = "COM-Port";
+	QFont fontCOM;
+	fontCOM.setPointSize(10);
+	COMlbl->setFont(fontCOM);
+	COMlbl->setText(qstr);
+	//create SpinBox
+	COMportNr = new QSpinBox(this);
+	COMportNr->setGeometry(780, 40, 50, 40);
+	COMportNr->setMinimum(1);
+	COMportNr->setMaximum(9);
+	COMportNr->setValue(7);
+	COMportNr->setFont(fontCOM);
+	// https://stackoverflow.com/questions/57758998/qspinbox-and-qdoublespinbox-do-not-call-method-on-valuechanged
+	// connect(COMportNr, QOverload<int>::of(&QSpinBox::valueChanged), this, &QtLED::COMportInit);
+
+	//Push Button
+	pb_setComNr = new QPushButton(this);
+	pb_setComNr->setText(" setzen ");
+	pb_setComNr->setGeometry(850, 40, 100, 40);
+	pb_setComNr->setFont(fontCOM);
+	connect(pb_setComNr, SIGNAL(clicked()), this, SLOT(COMportInit()));
+		
 	//--- Create Timer --
 	myTimer = new QTimer(this);
-	connect(myTimer, SIGNAL(timeout()), this, SLOT(myTimerSlot()),Qt::UniqueConnection);
+	connect(myTimer, SIGNAL(timeout()), this, SLOT(myTimerSlot()), Qt::UniqueConnection);
 	myTimer->setInterval(200);
 	myTimer->start();
 	qDebug() << "Jetzt geht es los!";
 }
 
+void QtLED::COMportInit() {
+	// Create new Serial Connection
+	QString portname = "COM";
+	portname += QString::number(COMportNr->value());
+	qDebug() << "COM Port changed to " << portname;
+	serial.setPortName(portname);
+	serial.open(QIODevice::ReadWrite);
+	serial.setBaudRate(QSerialPort::Baud115200);
+	serial.setDataBits(QSerialPort::Data8);
+	serial.setParity(QSerialPort::NoParity);
+	serial.setStopBits(QSerialPort::OneStop);
+	serial.setFlowControl(QSerialPort::NoFlowControl);
+	while (!serial.isOpen())
+		serial.open(QIODevice::ReadWrite);
+	pb_setComNr->setEnabled(false);
+}
+
 void QtLED::myTimerSlot() {
 	// vom Arduino kommt z.B. der String
-	// sensor = 1011 output [cm] = 6
+	// $ sensor= 1011 output[cm]= 6
 	//---------------------------------
 	//Leeres Byte Array zum speichern des empfangenen Strings
 	QByteArray input="                                         "; 
 	
-	//--- cm lesen --
 	if (serial.canReadLine()) {  //Zeile lesbar?
 		input = serial.readAll(); // In QBytearray speichern
-	    // C-String vorbereiten
-		char *str = new char[input.size() + 1];
-		strcpy(str, input.data()); //Zeichen aus input in str einkopieren
+		QString receiveStr = QString(input);  // In String wandeln
+	    
+    	// Aufsplitten des empfangenen Strings an Leerstellen
+		QStringList list = receiveStr.split(" ");
+		int anz = list.count();  // Anzahl der Elemente
+		qDebug() << "\n Anzahl" << anz;
 
-    //--- Sensorwert lesen -----
-		int sensorWert;
-		// [9] ist das Zeichen nach "sensor = "
-		int numbOfScan_sens = sscanf(&str[9], "%04d", &sensorWert);
-	//--- cm Wert lesen ---
-		int cmWert;
-		// Suchen nach dem Buchstaben m im String und dann bei Index 5 hinzuaddieren --> Startindex für cm-Wert
-		int index;
-		const char *ptr = strchr(str, 'm');
-		if (ptr) {
-			index = ptr - str + 5;
+		// $-Zeichen finden
+		int pos = 0;  
+		for (; pos < anz; pos++) {
+			if (list[pos] == "$ ") break;
 		}
-		int numbOfScan_cm = sscanf(&str[index], "%04d", &cmWert);
-
-		//--- GUI-Anzeigen aktualisieren ----
-		if (numbOfScan_sens == 1){
-			anzeige_sensorwert->setText(QString("%1").arg(sensorWert));
-			rb.size_x = sensorWert*0.9;  //Faktor, damit es in das Fenster passt
-			this->repaint();
+		qDebug() << "Start $ bei " << pos;
+	
+		int reiceiveInt[20];  // Speicher für alleempfangenen Zahlenwerte
+		int sensorWert = 0;
+		int cmWert = 0;
+		// alle Werte aus der empfangenen List in int wandeln
+		for (int i = 0; i < anz && i < 20; i++) {
+			reiceiveInt[i] = list[i].toInt(); 
+			qDebug() << reiceiveInt[i];
 		}
-		if (numbOfScan_cm == 1){
-			anzeige_cm->setText(QString("%1").arg(cmWert));
-			rb_cm.size_x = cmWert * 6 - 20; //Faktor und Verschiebung, damit es in das Fenster passt
-			this->repaint();
+		if (pos > 3) { // Sicherung gegen Abstürze
+			sensorWert = reiceiveInt[pos - 3];
+			qDebug() << "Sensor" << sensorWert;
+			cmWert = reiceiveInt[pos - 1];
+			qDebug() << "cmWert" << cmWert;
 		}
+		
+		// --- GUI-Anzeigen aktualisieren ----
+		anzeige_sensorwert->setText(QString("%1").arg(sensorWert));
+		rb.size_x = sensorWert*0.9;  //Faktor, damit es in das Fenster passt
+		anzeige_cm->setText(QString("%1").arg(cmWert));
+		rb_cm.size_x = cmWert * 6 - 20; //Faktor und Verschiebung, damit es in das Fenster passt
+		this->repaint();
 	}	
 	else {
 		qDebug() << "ERROR: Nichts empfangen";
