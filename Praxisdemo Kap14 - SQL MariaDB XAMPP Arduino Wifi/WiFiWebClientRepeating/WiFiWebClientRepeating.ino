@@ -33,7 +33,9 @@ WiFiClient client;
 
 // server address:
 //IP-Adress of XAMPP-Server in local network
-IPAddress server(192,168,1,142);  
+// IPAddress server(192,168,1,142);  
+// IP des Rechners auf dem SQL läuft => Omen @ home
+IPAddress server(192,168,1,84);  
 
 // The Data to put in meineDB
 float humidity=0, temperature=111;            
@@ -104,13 +106,14 @@ void httpRequest() {
     Serial.println(" ");
     Serial.println("-> connection established -  sending values to DB");
     Serial.println(" ");
-  // Browserzeile funktionier so: http://192.168.1.142/myPage4SQL/meineDB_write.php?hum=0.00&temp=112.3
+  // Browserzeile funktionier so: 
+  //  http://192.168.1.84/meineDB_write.php?hum=0.00&temp=112.3
 
   // HTTP request  call certain url and send data using GET
   // vgl. https://www.php-einfach.de/php-tutorial/_get-und-_post/
   
-    client.print("GET /myPage4SQL/meineDB_write.php?hum=");  // HTTP request  call certain url and send data using GET
-    Serial.print("GET /myPage4SQL/meineDB_write.php?hum="); 
+    client.print("GET /meineDB_write.php?hum=");  // HTTP request  call certain url and send data using GET
+    Serial.print("GET /meineDB_write.php?hum="); 
     client.print(humidity);  // HTTP request  send humidity
     Serial.print(humidity); 
     client.print("&temp=");                
@@ -119,7 +122,7 @@ void httpRequest() {
     Serial.print(temperature++);  
     client.println(" HTTP/1.1");
     Serial.println(" HTTP/1.1");
-    client.println("Host: 192.168.1.142");  // Server auf dem XAMPP PC
+    client.println("Host: 192.168.1.84");  // Server auf dem XAMPP PC
 
     //============ WICHTIG ! 2 x  Connection Close ===========
     client.println("Connection: close");   // HTTP request  close connection      
@@ -132,7 +135,7 @@ void httpRequest() {
     lastConnectionTime = millis();
   } else {
     // if you couldn't make a connection:
-    Serial.println("connection failed");
+    Serial.println("connection to SQL-Server failed");
   }
 }
 
